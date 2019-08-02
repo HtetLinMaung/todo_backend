@@ -1,0 +1,65 @@
+1. Setting up Server
+
+install python latest version
+open terminal or cmd type 'python'
+
+if python install correctly it will appear python prompt like below
+
+Python 3.7.4 (tags/v3.7.4:e09359112e, Jul  8 2019, 20:34:20) [MSC v.1916 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+
+exit the python prompt by typing "exit()"
+
+run command
+'pip install django'
+'pip install djangorestframework'
+'pip install django-cors-headers'
+cd to todo_backend project folder
+'python manage.py runserver'
+
+2. api usage
+    axios
+      .get("http://localhost:8000/todo/")
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    //   add todo
+    axios
+      .post("http://localhost:8000/todo/", {
+        title: "testing title...",
+        description: "testing description..."
+      })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    // delete
+    axios
+      .delete("http://localhost:8000/todo/3/")
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    // update
+    axios
+      .put("http://localhost:8000/todo/4/", {
+        title: "third title",
+        description: "third description"
+      })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
