@@ -1,21 +1,22 @@
 from .models import Todo
 from .serializers import TodoSerializer
+from django.http import Http404
+from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 
-@api_view(['GET', 'POST'])
-def todo_list(request, format=None):
+class TodoList(APIView):
     """
-    List all todo, or create a new todo.
+    List all todos, or create a new todo.
     """
-    if request.method == 'GET':
+
+    def get(self, request, format=None):
         serializer = TodoSerializer(Todo.objects.all(), many=True)
         return Response(serializer.data)
 
-    elif request.method == 'POST':
+    def post(self, request, format=None):
         serializer = TodoSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -23,24 +24,28 @@ def todo_list(request, format=None):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def todo_detail(request, pk, format=None):
+class TodoDetail(APIView):
     """
-    Retrieve, update or delete a todo.
+    Retrieve, update or delete a todo instance.
     """
-    todo = get_object_or_404(Todo, pk=pk)
 
-    if request.method == 'GET':
+    def get_object(self, pk):
+        return get_object_or_404(Todo, pk=pk)
+
+    def get(self, request, pk, format=None):
+        todo = self.get_object(pk)
         serializer = TodoSerializer(todo)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
+    def put(self, request, pk, format=None):
+        todo = self.get_object(pk)
         serializer = TodoSerializer(todo, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
+    def delete(self, request, pk, format=None):
+        todo = self.get_object(pk)
         todo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
